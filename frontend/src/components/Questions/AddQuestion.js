@@ -5,6 +5,7 @@ const AddQuestion = () => {
   const [selectedTestName, setSelectedTestName] = useState('');
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
+  const [newTestName, setNewTestName] = useState('');
 
   useEffect(() => {
     // Test adlarını API'den çek
@@ -24,7 +25,7 @@ const AddQuestion = () => {
     fetchTests();
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleAddQuestion = async (e) => {
     e.preventDefault();
 
     console.log("Selected Test Adı:", selectedTestName);
@@ -63,10 +64,55 @@ const AddQuestion = () => {
     }
   };
 
+  const handleAddTest = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Yeni testi ekliyoruz
+      const response = await fetch('http://localhost:3001/api/tests', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ testName: newTestName })
+      });
+
+      if (response.ok) {
+        setNewTestName('');
+        alert('Test başarıyla oluşturuldu');
+        // Yeni test listesini güncelle
+        const updatedTests = await response.json();
+        setTests([...tests, updatedTests]);
+      } else {
+        alert('Test oluşturulurken bir hata oluştu');
+      }
+    } catch (error) {
+      console.error('Error adding test:', error);
+      alert('Test oluşturulurken bir hata oluştu');
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center py-10 px-3">
-      <h1 className="text-2xl mb-4">Add Question</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+      <h1 className="text-2xl mb-4">Yeni Test Oluştur</h1>
+      <form onSubmit={handleAddTest} className="flex flex-col space-y-4">
+        <input
+          type="text"
+          value={newTestName}
+          onChange={(e) => setNewTestName(e.target.value)}
+          placeholder="Test Adı"
+          className="p-2 border border-gray-400 rounded"
+        />
+        <button
+          type="submit"
+          className="p-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+        >
+          Oluştur
+        </button>
+      </form>
+
+      <h1 className="text-2xl mb-4 mt-10">Soru Ekle</h1>
+      <form onSubmit={handleAddQuestion} className="flex flex-col space-y-4">
         <select
           value={selectedTestName}
           onChange={(e) => setSelectedTestName(e.target.value)}
@@ -96,7 +142,7 @@ const AddQuestion = () => {
           type="submit"
           className="p-2 bg-blue-500 text-white rounded hover:bg-blue-700"
         >
-          Add Question
+          Ekle
         </button>
       </form>
     </div>

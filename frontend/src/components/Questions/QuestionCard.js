@@ -23,7 +23,7 @@ const QuestionCard = () => {
 
   // Veriler yüklenmeden önceki durum
   if (tests.length === 0) {
-    return <div>Loading...</div>;
+    return <div>Yükleniyor...</div>;
   }
 
   const currentTest = tests[currentTestIndex];
@@ -52,21 +52,21 @@ const QuestionCard = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-10 px-3">
+    <div className="flex flex-col items-center justify-center py-2 px-1">
       <div className="flex flex-col justify-around w-full min-h-[600px] md:w-[800px] md:h-[600px] border border-cyan-900 rounded-xl bg-cyan-700 shadow-2xl px-4">
         <div className="flex flex-col items-center justify-center">
-          <div className="text-yellow-400 text-3xl">Test Name</div>
+          <div className="text-yellow-400 text-3xl">Test Adı</div>
           <div className="text-white mt-2">{currentTest.testName}</div>
         </div>
         <hr />
         <div className="flex flex-col items-center justify-center">
-          <div className="text-yellow-400 text-3xl">Question</div>
+          <div className="text-yellow-400 text-3xl">Soru</div>
           <div className="text-white mt-2">{currentQuestion.question}</div>
         </div>
         <hr />
         {showAnswer && (
           <div className="flex flex-col items-center justify-center mt-10">
-            <div className="text-yellow-400 text-3xl">Answer</div>
+            <div className="text-yellow-400 text-3xl">Cevap</div>
             <div className="text-white mt-2">{currentQuestion.answer}</div>
           </div>
         )}
@@ -76,19 +76,19 @@ const QuestionCard = () => {
           onClick={handlePreviousQuestion}
           className="p-3 bg-green-700 text-white rounded-lg mt-1 hover:opacity-90"
         >
-          Previous
+          Önceki
         </button>
         <button
           onClick={() => setShowAnswer(!showAnswer)}
           className="p-3 bg-yellow-500 w-full md:w-[600px] rounded-3xl mt-1 hover:opacity-90"
         >
-          {showAnswer ? "Hide Answer" : "Show Answer"}
+          {showAnswer ? "Cevabı Gizle" : "Cevabı Göster"}
         </button>
         <button
           onClick={handleNextQuestion}
           className="p-3 bg-green-700 text-white rounded-lg mt-1 hover:opacity-90"
         >
-          Next
+          Sonraki
         </button>
       </div>
     </div>

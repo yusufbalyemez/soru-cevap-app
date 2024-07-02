@@ -4,12 +4,14 @@ import QuestionCard from "./components/Questions/QuestionCard";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import TestDetails from "./components/Questions/TestDetails";
 import EditTest from "./components/Questions/EditTest";
+import Navbar from "./components/Menu/Navbar";
 
 function App() {
   return (
     <Router>
+      <Navbar/>
       <Routes>
-        <Route path="/" element={<QuestionCard />} />
+        <Route path="/sorular" element={<QuestionCard />} />
         <Route path="/soru-ekle" element={<AddQuestion />} />
         <Route path="/testler" element={<AllTests />} />
         <Route path="/tests/:testIndex" element={<TestDetails />} />

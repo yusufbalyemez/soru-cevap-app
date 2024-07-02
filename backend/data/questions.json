@@ -1,7 +1,7 @@
 {
   "tests": [
     {
-      "testName": "General Knowledge Test 1 sdada",
+      "testName": "Endeye Testi",
       "questions": [
         {
           "question": "What is the capital of France?",
@@ -46,6 +46,10 @@
         {
           "question": "saddada",
           "answer": "dadad"
+        },
+        {
+          "question": "Ananın adı?",
+          "answer": "Nejla"
         }
       ]
     },
@@ -136,6 +140,15 @@
         {
           "question": "What is the speed of light in vacuum?",
           "answer": "299,792,458 meters per second"
+        }
+      ]
+    },
+    {
+      "testName": "Yağız Testi",
+      "questions": [
+        {
+          "question": "Zıbap?",
+          "answer": "Irş"
         }
       ]
     }

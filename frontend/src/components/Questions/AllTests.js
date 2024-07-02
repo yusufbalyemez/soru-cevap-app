@@ -33,7 +33,7 @@ const AllTests = () => {
 
   return (
     <div className="flex flex-col items-center justify-center py-10 px-3">
-      <h1 className="text-2xl mb-4">All Tests</h1>
+      <h1 className="text-2xl mb-4">Tüm Testler</h1>
       <ul className="w-full md:w-1/2">
         {tests.map((test, index) => (
           <li key={index} className="flex justify-between items-center border-b py-2">
