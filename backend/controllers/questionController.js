@@ -77,3 +77,17 @@ exports.updateQuestion = (req, res) => {
     res.status(404).json({ message: 'Test or Question not found' });
   }
 };
+
+exports.updateTestName = (req, res) => {
+  const data = readData();
+  const { testIndex } = req.params;
+  const { testName } = req.body;
+
+  if (data.tests[testIndex]) {
+    data.tests[testIndex].testName = testName;
+    writeData(data);
+    res.status(200).json(data.tests[testIndex]);
+  } else {
+    res.status(404).json({ message: 'Test not found' });
+  }
+};
