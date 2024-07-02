@@ -5,12 +5,13 @@ const QuestionCard = () => {
   const [currentTestIndex, setCurrentTestIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [selectedTest, setSelectedTest] = useState("Tümü");
 
   // Backend'den verileri çekme
   useEffect(() => {
     const fetchTests = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/tests');
+        const response = await fetch("http://localhost:3001/api/tests");
         const data = await response.json();
         setTests(data);
       } catch (error) {
@@ -26,48 +27,107 @@ const QuestionCard = () => {
     return <div>Yükleniyor...</div>;
   }
 
-  const currentTest = tests[currentTestIndex];
-  const currentQuestion = currentTest.questions[currentQuestionIndex];
+  const allQuestions = tests.reduce(
+    (acc, test) => [...acc, ...test.questions],
+    []
+  );
+
+  const currentTest =
+    selectedTest === "Tümü" ? allQuestions : tests[currentTestIndex].questions;
+  const currentQuestion =
+    selectedTest === "Tümü"
+      ? allQuestions[currentQuestionIndex]
+      : tests[currentTestIndex].questions[currentQuestionIndex];
 
   const handleNextQuestion = () => {
     setShowAnswer(false);
-    if (currentQuestionIndex < currentTest.questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else if (currentTestIndex < tests.length - 1) {
-      setCurrentTestIndex(currentTestIndex + 1);
-      setCurrentQuestionIndex(0);
+    if (selectedTest === "Tümü") {
+      if (currentQuestionIndex < allQuestions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }
+    } else {
+      if (currentQuestionIndex < tests[currentTestIndex].questions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      } else if (currentTestIndex < tests.length - 1) {
+        setCurrentTestIndex(currentTestIndex + 1);
+        setCurrentQuestionIndex(0);
+      }
     }
   };
 
   const handlePreviousQuestion = () => {
     setShowAnswer(false);
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    } else if (currentTestIndex > 0) {
-      setCurrentTestIndex(currentTestIndex - 1);
-      setCurrentQuestionIndex(
-        tests[currentTestIndex - 1].questions.length - 1
+    if (selectedTest === "Tümü") {
+      if (currentQuestionIndex > 0) {
+        setCurrentQuestionIndex(currentQuestionIndex - 1);
+      }
+    } else {
+      if (currentQuestionIndex > 0) {
+        setCurrentQuestionIndex(currentQuestionIndex - 1);
+      } else if (currentTestIndex > 0) {
+        setCurrentTestIndex(currentTestIndex - 1);
+        setCurrentQuestionIndex(
+          tests[currentTestIndex - 1].questions.length - 1
+        );
+      }
+    }
+  };
+
+  const handleTestChange = (e) => {
+    const selectedTestName = e.target.value;
+    setSelectedTest(selectedTestName);
+    setCurrentQuestionIndex(0);
+    setShowAnswer(false);
+
+    if (selectedTestName === "Tümü") {
+      setCurrentTestIndex(0);
+    } else {
+      const selectedTestIndex = tests.findIndex(
+        (test) => test.testName === selectedTestName
       );
+      setCurrentTestIndex(selectedTestIndex);
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center py-2 px-1">
+      <div className="mb-4">
+        <select
+          value={selectedTest}
+          onChange={handleTestChange}
+          className="p-2 border border-gray-400 rounded"
+        >
+          <option value="Tümü">Tümü</option>
+          {tests.map((test, index) => (
+            <option key={index} value={test.testName}>
+              {test.testName}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="flex flex-col justify-around w-full min-h-[600px] md:w-[800px] md:h-[600px] border border-cyan-900 rounded-xl bg-cyan-700 shadow-2xl px-4">
         <div className="flex flex-col items-center justify-center">
-          <div className="text-yellow-400 text-3xl">Test Adı</div>
-          <div className="text-white mt-2">{currentTest.testName}</div>
-        </div>
-        <hr />
-        <div className="flex flex-col items-center justify-center">
-          <div className="text-yellow-400 text-3xl">Soru</div>
-          <div className="text-white mt-2">{currentQuestion.question}</div>
+          <div className="text-yellow-400 text-3xl">
+            {selectedTest === "Tümü"
+              ? "Tüm Testler"
+              : tests[currentTestIndex].testName}
+          </div>
+          <div className="text-white mt-2">
+            {selectedTest === "Tümü"
+              ? allQuestions[currentQuestionIndex].question
+              : currentQuestion.question}
+          </div>
         </div>
         <hr />
         {showAnswer && (
           <div className="flex flex-col items-center justify-center mt-10">
             <div className="text-yellow-400 text-3xl">Cevap</div>
-            <div className="text-white mt-2">{currentQuestion.answer}</div>
+            <div className="text-white mt-2">
+              {selectedTest === "Tümü"
+                ? allQuestions[currentQuestionIndex].answer
+                : currentQuestion.answer}
+            </div>
           </div>
         )}
       </div>
