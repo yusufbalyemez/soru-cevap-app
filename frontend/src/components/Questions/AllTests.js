@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom';
 
 const AllTests = () => {
   const [tests, setTests] = useState([]);
+  const apiUrl = process.env.REACT_APP_API_URL; // .env dosyasındaki değişkeni burada kullanıyoruz
+
+  console.log('API URL:', apiUrl); // Debug amaçlı, çevresel değişkenin doğru yüklendiğinden emin olun
 
   // API'den test adlarını çekme
   useEffect(() => {
     const fetchTests = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/tests`);
+        const response = await fetch(`${apiUrl}/api/tests`);
         const data = await response.json();
         setTests(data);
       } catch (error) {
@@ -17,12 +20,12 @@ const AllTests = () => {
     };
 
     fetchTests();
-  }, []);
+  }, [apiUrl]);
 
   // Test silme
   const handleDelete = async (index) => {
     try {
-      await fetch(`${process.env.REACT_APP_API_URL}/tests/${index}`, {
+      await fetch(`${apiUrl}/api/tests/${index}`, {
         method: 'DELETE',
       });
       setTests(tests.filter((_, i) => i !== index));

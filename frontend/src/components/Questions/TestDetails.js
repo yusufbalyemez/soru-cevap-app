@@ -4,11 +4,12 @@ import { useParams } from "react-router-dom";
 const TestDetails = () => {
   const { testIndex } = useParams();
   const [test, setTest] = useState(null);
+  const apiUrl = process.env.REACT_APP_API_URL; // .env dosyasındaki değişkeni burada kullanıyoruz
 
   useEffect(() => {
     const fetchTestDetails = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/tests`);
+        const response = await fetch(`${apiUrl}/api/tests`);
         const data = await response.json();
         setTest(data[testIndex]);
       } catch (error) {
@@ -17,12 +18,12 @@ const TestDetails = () => {
     };
 
     fetchTestDetails();
-  }, [testIndex]);
+  }, [testIndex, apiUrl]);
 
   const handleDeleteQuestion = async (questionIndex) => {
     try {
       await fetch(
-        `http://localhost:3001/api/tests/${testIndex}/questions/${questionIndex}`,
+        `${apiUrl}/api/tests/${testIndex}/questions/${questionIndex}`,
         {
           method: "DELETE",
         }

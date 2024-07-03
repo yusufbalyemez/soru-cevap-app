@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 
 const AddTest = () => {
   const [testName, setTestName] = useState('');
-
+  const apiUrl = process.env.REACT_APP_API_URL; 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       // Yeni testi ekliyoruz
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/tests`, {
+      const response = await fetch(`${apiUrl}/api/tests`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

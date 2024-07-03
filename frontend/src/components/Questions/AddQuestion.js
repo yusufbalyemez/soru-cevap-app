@@ -6,12 +6,13 @@ const AddQuestion = () => {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [newTestName, setNewTestName] = useState('');
+  const apiUrl = process.env.REACT_APP_API_URL; // .env dosyasındaki değişkeni burada kullanıyoruz
 
   useEffect(() => {
     // Test adlarını API'den çek
     const fetchTests = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/tests`);
+        const response = await fetch(`${apiUrl}/api/tests`);
         const data = await response.json();
         setTests(data);
         if (data.length > 0) {
@@ -23,7 +24,7 @@ const AddQuestion = () => {
     };
 
     fetchTests();
-  }, []);
+  }, [apiUrl]);
 
   const handleAddQuestion = async (e) => {
     e.preventDefault();
@@ -34,7 +35,7 @@ const AddQuestion = () => {
 
     try {
       // Bulunan test indeksini bulmak için testleri alıyoruz
-      const testsResponse = await fetch(`${process.env.REACT_APP_API_URL}/tests`);
+      const testsResponse = await fetch(`${apiUrl}/api/tests`);
       const tests = await testsResponse.json();
       const testIndex = tests.findIndex(test => test.testName === selectedTestName);
 
@@ -46,7 +47,7 @@ const AddQuestion = () => {
       }
 
       // Yeni soruyu belirlenen test indeksine ekliyoruz
-      await fetch(`${process.env.REACT_APP_API_URL}/tests/${testIndex}/questions`, {
+      await fetch(`${apiUrl}/api/tests/${testIndex}/questions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -69,7 +70,7 @@ const AddQuestion = () => {
 
     try {
       // Yeni testi ekliyoruz
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/tests`, {
+      const response = await fetch(`${apiUrl}/api/tests`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

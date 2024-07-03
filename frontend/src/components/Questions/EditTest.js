@@ -5,11 +5,12 @@ const EditTest = () => {
   const { testIndex } = useParams();
   const [testName, setTestName] = useState('');
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL; // .env dosyasındaki değişkeni burada kullanıyoruz
 
   useEffect(() => {
     const fetchTestDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/tests`);
+        const response = await fetch(`${apiUrl}/api/tests`);
         const data = await response.json();
         setTestName(data[testIndex].testName);
       } catch (error) {
@@ -18,12 +19,12 @@ const EditTest = () => {
     };
 
     fetchTestDetails();
-  }, [testIndex]);
+  }, [testIndex, apiUrl]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/tests/${testIndex}`, {
+      const response = await fetch(`${apiUrl}/api/tests/${testIndex}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

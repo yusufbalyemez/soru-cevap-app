@@ -6,12 +6,13 @@ const QuestionCard = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedTest, setSelectedTest] = useState("Tümü");
+  const apiUrl = process.env.REACT_APP_API_URL; 
 
   // Backend'den verileri çekme
   useEffect(() => {
     const fetchTests = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/tests`);
+        const response = await fetch(`${apiUrl}/api/tests`);
         const data = await response.json();
         setTests(data);
       } catch (error) {
@@ -20,7 +21,7 @@ const QuestionCard = () => {
     };
 
     fetchTests();
-  }, []);
+  }, [apiUrl]);
 
   // Veriler yüklenmeden önceki durum
   if (tests.length === 0) {
