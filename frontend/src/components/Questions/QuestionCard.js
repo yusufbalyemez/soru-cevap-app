@@ -107,32 +107,36 @@ const QuestionCard = () => {
         </select>
       </div>
 
-      <div className="flex flex-col justify-around w-full min-h-[600px] md:w-[800px] md:h-[600px] border border-cyan-900 rounded-xl bg-cyan-700 shadow-2xl px-4">
+      <div className="flex flex-col justify-around w-full min-h-[450px] md:w-[800px] md:h-[600px] border border-cyan-900 rounded-xl bg-cyan-700 shadow-2xl px-4">
         <div className="flex flex-col items-center justify-center">
           <div className="text-yellow-400 text-3xl">
             {selectedTest === "Tümü"
               ? "Tüm Testler"
               : tests[currentTestIndex].testName}
           </div>
-          <div className="text-white mt-2">
+          <div className="text-white mt-2 min-h-[50px]">
             {selectedTest === "Tümü"
               ? allQuestions[currentQuestionIndex].question
               : currentQuestion.question}
           </div>
         </div>
-        <hr />
-        {showAnswer && (
-          <div className="flex flex-col items-center justify-center mt-10">
-            <div className="text-yellow-400 text-3xl">Cevap</div>
-            <div className="text-white mt-2">
-              {selectedTest === "Tümü"
-                ? allQuestions[currentQuestionIndex].answer
-                : currentQuestion.answer}
-            </div>
-          </div>
-        )}
+        <hr className="w-full border-t border-white" />
+        <div className="flex flex-col items-center justify-center mt-10 min-h-[100px]">
+          {showAnswer ? (
+            <>
+              <div className="text-yellow-400 text-3xl">Cevap</div>
+              <div className="text-white mt-2">
+                {selectedTest === "Tümü"
+                  ? allQuestions[currentQuestionIndex].answer
+                  : currentQuestion.answer}
+              </div>
+            </>
+          ) : (
+            <div className="min-h-[50px]"></div>
+          )}
+        </div>
       </div>
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 mt-4">
         <button
           onClick={handlePreviousQuestion}
           className="p-3 bg-green-700 text-white rounded-lg mt-1 hover:opacity-90"
