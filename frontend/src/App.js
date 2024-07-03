@@ -9,8 +9,9 @@ import Navbar from "./components/Menu/Navbar";
 function App() {
   return (
     <Router>
-      <Navbar/>
+      <Navbar />
       <Routes>
+        <Route path="/" element={<QuestionCard />} />
         <Route path="/sorular" element={<QuestionCard />} />
         <Route path="/soru-ekle" element={<AddQuestion />} />
         <Route path="/testler" element={<AllTests />} />
