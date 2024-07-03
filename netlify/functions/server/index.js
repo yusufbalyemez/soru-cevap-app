@@ -21,6 +21,16 @@ mongoose.connect(mongoURI)
 
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/api', questionRoutes);
+
+const routerBasePath = process.env.NODE_ENV === 'production' ? '/.netlify/functions/server/api' : '/api';
+
+app.use(routerBasePath, questionRoutes);
+
+if (process.env.NODE_ENV !== 'production') {
+  const port = process.env.PORT || 3001;
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+  });
+}
 
 module.exports.handler = serverless(app);
