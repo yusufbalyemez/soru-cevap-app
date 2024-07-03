@@ -8,7 +8,7 @@ const AllTests = () => {
   useEffect(() => {
     const fetchTests = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/tests');
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/tests`);
         const data = await response.json();
         setTests(data);
       } catch (error) {
@@ -22,7 +22,7 @@ const AllTests = () => {
   // Test silme
   const handleDelete = async (index) => {
     try {
-      await fetch(`http://localhost:3001/api/tests/${index}`, {
+      await fetch(`${process.env.REACT_APP_API_URL}/tests/${index}`, {
         method: 'DELETE',
       });
       setTests(tests.filter((_, i) => i !== index));

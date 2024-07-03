@@ -8,7 +8,7 @@ const TestDetails = () => {
   useEffect(() => {
     const fetchTestDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/tests`);
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/tests`);
         const data = await response.json();
         setTest(data[testIndex]);
       } catch (error) {

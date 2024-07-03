@@ -11,7 +11,7 @@ const QuestionCard = () => {
   useEffect(() => {
     const fetchTests = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/tests");
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/tests`);
         const data = await response.json();
         setTests(data);
       } catch (error) {

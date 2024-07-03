@@ -11,7 +11,7 @@ const AddQuestion = () => {
     // Test adlarını API'den çek
     const fetchTests = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/tests');
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/tests`);
         const data = await response.json();
         setTests(data);
         if (data.length > 0) {
@@ -34,7 +34,7 @@ const AddQuestion = () => {
 
     try {
       // Bulunan test indeksini bulmak için testleri alıyoruz
-      const testsResponse = await fetch('http://localhost:3001/api/tests');
+      const testsResponse = await fetch(`${process.env.REACT_APP_API_URL}/tests`);
       const tests = await testsResponse.json();
       const testIndex = tests.findIndex(test => test.testName === selectedTestName);
 
@@ -46,7 +46,7 @@ const AddQuestion = () => {
       }
 
       // Yeni soruyu belirlenen test indeksine ekliyoruz
-      await fetch(`http://localhost:3001/api/tests/${testIndex}/questions`, {
+      await fetch(`${process.env.REACT_APP_API_URL}/tests/${testIndex}/questions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -69,7 +69,7 @@ const AddQuestion = () => {
 
     try {
       // Yeni testi ekliyoruz
-      const response = await fetch('http://localhost:3001/api/tests', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/tests`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
