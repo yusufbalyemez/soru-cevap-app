@@ -21,6 +21,6 @@ mongoose.connect(mongoURI)
 
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/.netlify/functions/server/api', questionRoutes);
+app.use('/api', questionRoutes);
 
 module.exports.handler = serverless(app);
