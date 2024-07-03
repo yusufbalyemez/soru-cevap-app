@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from "react";
 
-const AddQuestion = () => {
+const QuestionCard = () => {
   const [tests, setTests] = useState([]);
-  const [selectedTestId, setSelectedTestId] = useState("");
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [newTestName, setNewTestName] = useState("");
-  const apiUrl = process.env.REACT_APP_API_URL; // .env dosyasındaki değişkeni burada kullanıyoruz
+  const [currentTestIndex, setCurrentTestIndex] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [selectedTest, setSelectedTest] = useState("Tümü");
+  const apiUrl = process.env.REACT_APP_API_URL;
 
+  // Backend'den verileri çekme
   useEffect(() => {
-    // Test adlarını API'den çek
     const fetchTests = async () => {
       try {
         const response = await fetch(`${apiUrl}/api/tests`);
         const data = await response.json();
         setTests(data);
-        if (data.length > 0) {
-          setSelectedTestId(data[0]._id); // Varsayılan olarak ilk testin ID'sini seçili hale getiriyor
-        }
       } catch (error) {
         console.error("Error fetching tests:", error);
       }
@@ -26,110 +23,146 @@ const AddQuestion = () => {
     fetchTests();
   }, [apiUrl]);
 
-  const handleAddQuestion = async (e) => {
-    e.preventDefault();
-    if (!selectedTestId) {
-      alert("Please select a test first.");
-      return;
-    }
+  // Veriler yüklenmeden önceki durum
+  if (tests.length === 0) {
+    return <div>Yükleniyor...</div>;
+  }
 
-    // Yeni soruyu belirlenen test ID'sine ekliyoruz
-    await fetch(`${apiUrl}/api/tests/questions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ testId: selectedTestId, question, answer }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        alert("Soru başarıyla eklendi");
-        setQuestion("");
-        setAnswer("");
-      })
-      .catch((error) => {
-        console.error("Error adding question:", error);
-        alert("Soru eklenirken bir hata oluştu");
-      });
+  const allQuestions = tests.reduce(
+    (acc, test) => [...acc, ...test.questions],
+    []
+  );
+
+  const currentQuestion =
+    selectedTest === "Tümü"
+      ? allQuestions[currentQuestionIndex]
+      : tests[currentTestIndex].questions[currentQuestionIndex];
+
+  const handleNextQuestion = () => {
+    setShowAnswer(false);
+    if (selectedTest === "Tümü") {
+      if (currentQuestionIndex < allQuestions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }
+    } else {
+      if (currentQuestionIndex < tests[currentTestIndex].questions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }
+    }
   };
 
-  const handleAddTest = async (e) => {
-    e.preventDefault();
-    // Yeni testi ekliyoruz
-    await fetch(`${apiUrl}/api/tests`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ testName: newTestName }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setNewTestName("");
-        alert("Test başarıyla oluşturuldu");
-        setTests([...tests, data]); // Yeni testi listeye ekliyoruz
-        setSelectedTestId(data._id); // Yeni oluşturulan testi seçili yap
-      })
-      .catch((error) => {
-        console.error("Error adding test:", error);
-        alert("Test oluşturulurken bir hata oluştu");
-      });
+  const handlePreviousQuestion = () => {
+    setShowAnswer(false);
+    if (selectedTest === "Tümü") {
+      if (currentQuestionIndex > 0) {
+        setCurrentQuestionIndex(currentQuestionIndex - 1);
+      }
+    } else {
+      if (currentQuestionIndex > 0) {
+        setCurrentQuestionIndex(currentQuestionIndex - 1);
+      }
+    }
+  };
+
+  const handleTestChange = (e) => {
+    const selectedTestName = e.target.value;
+    setSelectedTest(selectedTestName);
+    setCurrentQuestionIndex(0);
+    setShowAnswer(false);
+
+    if (selectedTestName === "Tümü") {
+      setCurrentTestIndex(0);
+    } else {
+      const selectedTestIndex = tests.findIndex(
+        (test) => test.testName === selectedTestName
+      );
+      setCurrentTestIndex(selectedTestIndex);
+    }
+  };
+
+  const handleRandomQuestion = () => {
+    setShowAnswer(false);
+    if (selectedTest === "Tümü") {
+      const randomIndex = Math.floor(Math.random() * allQuestions.length);
+      setCurrentQuestionIndex(randomIndex);
+    } else {
+      const randomIndex = Math.floor(Math.random() * tests[currentTestIndex].questions.length);
+      setCurrentQuestionIndex(randomIndex);
+    }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-10 px-3 mt-16">
-      <h1 className="text-2xl mb-4">Yeni Test Oluştur</h1>
-      <form onSubmit={handleAddTest} className="flex flex-col space-y-4">
-        <input
-          type="text"
-          value={newTestName}
-          onChange={(e) => setNewTestName(e.target.value)}
-          placeholder="Test Adı"
-          className="p-2 border border-gray-400 rounded"
-        />
-        <button
-          type="submit"
-          className="p-2 bg-blue-500 text-white rounded hover:bg-blue"
-        >
-          Oluştur
-        </button>
-      </form>
-      <h1 className="text-2xl mb-4 mt-10">Soru Ekle</h1>
-      <form onSubmit={handleAddQuestion} className="flex flex-col space-y-4">
+    <div className="flex flex-col items-center justify-center py-2 px-1 mt-16">
+      <div className="mb-4">
         <select
-          value={selectedTestId}
-          onChange={(e) => setSelectedTestId(e.target.value)}
+          value={selectedTest}
+          onChange={handleTestChange}
           className="p-2 border border-gray-400 rounded"
         >
-          {tests.map((test) => (
-            <option key={test._id} value={test._id}>
+          <option value="Tümü">Tümü</option>
+          {tests.map((test, index) => (
+            <option key={index} value={test.testName}>
               {test.testName}
             </option>
           ))}
         </select>
-        <input
-          type="text"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Soru"
-          className="p-2 border border-gray-400 rounded"
-        />
-        <input
-          type="text"
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-          placeholder="Cevap"
-          className="p-2 border border-gray-400 rounded"
-        />
+      </div>
+
+      <div
+        className="flex flex-col justify-around w-full max-w-full overflow-x-hidden min-h-[450px] md:w-[800px] md:h-[600px] border border-cyan-900 rounded-xl bg-cyan-700 shadow-2xl px-4 cursor-pointer"
+        onClick={handleRandomQuestion}
+        onTouchStart={handleRandomQuestion} // Dokunma olayını ekledik
+      >
+        <div className="flex flex-col items-center justify-center">
+          <div className="text-yellow-400 text-3xl">
+            {selectedTest === "Tümü"
+              ? "Tüm Testler"
+              : tests[currentTestIndex].testName}
+          </div>
+          <div className="text-white mt-2 min-h-[50px]">
+            {selectedTest === "Tümü"
+              ? allQuestions[currentQuestionIndex].question
+              : currentQuestion.question}
+          </div>
+        </div>
+        <hr className="w-full border-t border-white" />
+        <div className="flex flex-col items-center justify-center mt-10 min-h-[100px]">
+          {showAnswer ? (
+            <>
+              <div className="text-yellow-400 text-3xl">Cevap</div>
+              <div className="text-white mt-2">
+                {selectedTest === "Tümü"
+                  ? allQuestions[currentQuestionIndex].answer
+                  : currentQuestion.answer}
+              </div>
+            </>
+          ) : (
+            <div className="min-h-[50px]"></div>
+          )}
+        </div>
+      </div>
+      <div className="flex space-x-2 mt-4 w-full justify-center">
         <button
-          type="submit"
-          className="p-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+          onClick={handlePreviousQuestion}
+          className="p-3 bg-green-700 text-white rounded-lg mt-1 hover:opacity-90 w-32"
         >
-          Ekle
+          Önceki
         </button>
-      </form>
+        <button
+          onClick={() => setShowAnswer(!showAnswer)}
+          className="p-3 bg-yellow-500 text-white rounded-3xl mt-1 hover:opacity-90 w-32"
+        >
+          {showAnswer ? "Cevabı Gizle" : "Cevabı Göster"}
+        </button>
+        <button
+          onClick={handleNextQuestion}
+          className="p-3 bg-green-700 text-white rounded-lg mt-1 hover:opacity-90 w-32"
+        >
+          Sonraki
+        </button>
+      </div>
     </div>
   );
 };
 
-export default AddQuestion;
+export default QuestionCard;
