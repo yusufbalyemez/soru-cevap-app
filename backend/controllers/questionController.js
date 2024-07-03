@@ -43,7 +43,8 @@ exports.addTest = async (req, res) => {
 
 // Teste soru ekle
 exports.addQuestion = async (req, res) => {
-  const { testId, question, answer } = req.body;
+  const { question, answer,testId } = req.body;
+
   try {
     const test = await Test.findById(testId);
     if (!test) {
@@ -121,3 +122,4 @@ exports.deleteTest = async (req, res) => {
     res.status(500).json({ message: 'Error deleting test', error: err });
   }
 };
+

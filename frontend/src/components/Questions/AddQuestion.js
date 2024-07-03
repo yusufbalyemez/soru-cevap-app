@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const AddQuestion = () => {
   const [tests, setTests] = useState([]);
-  const [selectedTestId, setSelectedTestId] = useState('');
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
-  const [newTestName, setNewTestName] = useState('');
+  const [selectedTestId, setSelectedTestId] = useState("");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [newTestName, setNewTestName] = useState("");
   const apiUrl = process.env.REACT_APP_API_URL; // .env dosyasındaki değişkeni burada kullanıyoruz
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const AddQuestion = () => {
           setSelectedTestId(data[0]._id); // Varsayılan olarak ilk testin ID'sini seçili hale getiriyor
         }
       } catch (error) {
-        console.error('Error fetching tests:', error);
+        console.error("Error fetching tests:", error);
       }
     };
 
@@ -34,46 +34,46 @@ const AddQuestion = () => {
     }
 
     // Yeni soruyu belirlenen test ID'sine ekliyoruz
-    await fetch(`${apiUrl}/api/tests/${selectedTestId}/questions`, {
-      method: 'POST',
+    await fetch(`${apiUrl}/api/tests/questions`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ question, answer })
+      body: JSON.stringify({ testId: selectedTestId, question, answer }),
     })
-    .then(res => res.json())
-    .then(data => {
-      alert('Soru başarıyla eklendi');
-      setQuestion('');
-      setAnswer('');
-    })
-    .catch(error => {
-      console.error('Error adding question:', error);
-      alert('Soru eklenirken bir hata oluştu');
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        alert("Soru başarıyla eklendi");
+        setQuestion("");
+        setAnswer("");
+      })
+      .catch((error) => {
+        console.error("Error adding question:", error);
+        alert("Soru eklenirken bir hata oluştu");
+      });
   };
 
   const handleAddTest = async (e) => {
     e.preventDefault();
     // Yeni testi ekliyoruz
     await fetch(`${apiUrl}/api/tests`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ testName: newTestName })
+      body: JSON.stringify({ testName: newTestName }),
     })
-    .then(res => res.json())
-    .then(data => {
-      setNewTestName('');
-      alert('Test başarıyla oluşturuldu');
-      setTests([...tests, data]); // Yeni testi listeye ekliyoruz
-      setSelectedTestId(data._id); // Yeni oluşturulan testi seçili yap
-    })
-    .catch(error => {
-      console.error('Error adding test:', error);
-      alert('Test oluşturulurken bir hata oluştu');
-    });
+      .then((res) => res.json())
+      .then((data) => {
+        setNewTestName("");
+        alert("Test başarıyla oluşturuldu");
+        setTests([...tests, data]); // Yeni testi listeye ekliyoruz
+        setSelectedTestId(data._id); // Yeni oluşturulan testi seçili yap
+      })
+      .catch((error) => {
+        console.error("Error adding test:", error);
+        alert("Test oluşturulurken bir hata oluştu");
+      });
   };
 
   return (
@@ -89,12 +89,11 @@ const AddQuestion = () => {
         />
         <button
           type="submit"
-          className="p-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+          className="p-2 bg-blue-500 text-white rounded hover:bg-blue"
         >
           Oluştur
         </button>
       </form>
-
       <h1 className="text-2xl mb-4 mt-10">Soru Ekle</h1>
       <form onSubmit={handleAddQuestion} className="flex flex-col space-y-4">
         <select
