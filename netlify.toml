@@ -7,5 +7,5 @@
   directory = "netlify/functions"
 
 [build.environment]
-  REACT_APP_API_URL = "/.netlify/functions/server"
+  REACT_APP_API_URL = "https://fatapp.netlify.app"
   MONGO_URI = "mongodb+srv://yusufbalyemez93:q2RH3OcP1V2JjHrE@fat-app.nijrlwj.mongodb.net/?retryWrites=true&w=majority&appName=fat-app"
