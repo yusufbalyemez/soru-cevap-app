@@ -14,8 +14,8 @@ function App() {
         <Route path="/sorular" element={<QuestionCard />} />
         <Route path="/soru-ekle" element={<AddQuestion />} />
         <Route path="/testler" element={<AllTests />} />
-        <Route path="/tests/:testIndex" element={<TestDetails />} />
-        <Route path="/edit-test/:testIndex" element={<EditTest />} />
+        <Route path="/tests/:testId" element={<TestDetails />} />
+        <Route path="/edit-test/:testId" element={<EditTest />} />
       </Routes>
     </Router>
   );

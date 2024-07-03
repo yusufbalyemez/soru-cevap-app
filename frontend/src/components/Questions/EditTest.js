@@ -2,29 +2,41 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const EditTest = () => {
-  const { testIndex } = useParams();
+  const { testId } = useParams(); // useParams ile testId parametresini alıyoruz
   const [testName, setTestName] = useState('');
   const navigate = useNavigate();
-  const apiUrl = process.env.REACT_APP_API_URL; // .env dosyasındaki değişkeni burada kullanıyoruz
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchTestDetails = async () => {
+      if (!testId) { // testId'nin varlığını kontrol et
+        console.error('Test ID is undefined');
+        return;
+      }
       try {
-        const response = await fetch(`${apiUrl}/api/tests`);
+        const response = await fetch(`${apiUrl}/api/tests/${testId}`); // URL'de testId'yi kullanarak istek yap
         const data = await response.json();
-        setTestName(data[testIndex].testName);
+        if (response.ok) {
+          setTestName(data.testName);
+        } else {
+          throw new Error('Failed to fetch test details');
+        }
       } catch (error) {
         console.error('Error fetching test details:', error);
       }
     };
 
     fetchTestDetails();
-  }, [testIndex, apiUrl]);
+  }, [testId, apiUrl]); // Bağımlılıkları testId ve apiUrl olarak güncelle
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!testName) {
+      alert("Test name is required.");
+      return;
+    }
     try {
-      const response = await fetch(`${apiUrl}/api/tests/${testIndex}`, {
+      const response = await fetch(`${apiUrl}/api/tests/${testId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -32,12 +44,14 @@ const EditTest = () => {
         body: JSON.stringify({ testName }),
       });
       if (response.ok) {
+        alert('Test name updated successfully');
         navigate('/testler');
       } else {
-        console.error('Failed to update test name');
+        throw new Error('Failed to update test name');
       }
     } catch (error) {
       console.error('Error updating test name:', error);
+      alert('Error updating test name');
     }
   };
 
@@ -63,4 +77,4 @@ const EditTest = () => {
   );
 };
 
-export default EditTest;
+export default EditTest; 

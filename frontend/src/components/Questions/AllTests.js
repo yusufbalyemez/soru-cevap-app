@@ -5,8 +5,6 @@ const AllTests = () => {
   const [tests, setTests] = useState([]);
   const apiUrl = process.env.REACT_APP_API_URL; // .env dosyasındaki değişkeni burada kullanıyoruz
 
-  console.log('API URL:', apiUrl); // Debug amaçlı, çevresel değişkenin doğru yüklendiğinden emin olun
-
   // API'den test adlarını çekme
   useEffect(() => {
     const fetchTests = async () => {
@@ -23,12 +21,13 @@ const AllTests = () => {
   }, [apiUrl]);
 
   // Test silme
-  const handleDelete = async (index) => {
+  const handleDelete = async (testId) => {
     try {
-      await fetch(`${apiUrl}/api/tests/${index}`, {
+      await fetch(`${apiUrl}/api/tests/${testId}`, {
         method: 'DELETE',
       });
-      setTests(tests.filter((_, i) => i !== index));
+      // Sadece silinen testi listeden çıkarma
+      setTests(tests.filter(test => test._id !== testId));
     } catch (error) {
       console.error('Error deleting test:', error);
     }
@@ -38,20 +37,20 @@ const AllTests = () => {
     <div className="flex flex-col items-center justify-center py-10 px-3">
       <h1 className="text-2xl mb-4">Tüm Testler</h1>
       <ul className="w-full md:w-1/2">
-        {tests.map((test, index) => (
-          <li key={index} className="flex justify-between items-center border-b py-2">
-            <Link to={`/tests/${index}`} className="text-blue-500 hover:underline">
+        {tests.map((test) => (
+          <li key={test._id} className="flex justify-between items-center border-b py-2">
+            <Link to={`/tests/${test._id}`} className="text-blue-500 hover:underline">
               {test.testName}
             </Link>
             <div>
               <Link
-                to={`/edit-test/${index}`}
+                to={`/edit-test/${test._id}`}
                 className="p-2 bg-yellow-500 text-white rounded hover:bg-yellow-700 mr-2"
               >
                 Düzenle
               </Link>
               <button
-                onClick={() => handleDelete(index)}
+                onClick={() => handleDelete(test._id)}
                 className="p-2 bg-red-500 text-white rounded hover:bg-red-700"
               >
                 Sil

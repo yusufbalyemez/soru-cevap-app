@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const AddQuestion = () => {
   const [tests, setTests] = useState([]);
-  const [selectedTestName, setSelectedTestName] = useState('');
+  const [selectedTestId, setSelectedTestId] = useState('');
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [newTestName, setNewTestName] = useState('');
@@ -16,7 +16,7 @@ const AddQuestion = () => {
         const data = await response.json();
         setTests(data);
         if (data.length > 0) {
-          setSelectedTestName(data[0].testName);
+          setSelectedTestId(data[0]._id); // Varsayılan olarak ilk testin ID'sini seçili hale getiriyor
         }
       } catch (error) {
         console.error('Error fetching tests:', error);
@@ -28,69 +28,52 @@ const AddQuestion = () => {
 
   const handleAddQuestion = async (e) => {
     e.preventDefault();
+    if (!selectedTestId) {
+      alert("Please select a test first.");
+      return;
+    }
 
-    console.log("Selected Test Adı:", selectedTestName);
-    console.log("Test Soru:", question);
-    console.log("Test Cevap:", answer);
-
-    try {
-      // Bulunan test indeksini bulmak için testleri alıyoruz
-      const testsResponse = await fetch(`${apiUrl}/api/tests`);
-      const tests = await testsResponse.json();
-      const testIndex = tests.findIndex(test => test.testName === selectedTestName);
-
-      console.log("Testler:", tests);
-      console.log("Test Index:", testIndex);
-      if (testIndex === -1) {
-        alert('Test bulunamadı');
-        return;
-      }
-
-      // Yeni soruyu belirlenen test indeksine ekliyoruz
-      await fetch(`${apiUrl}/api/tests/${testIndex}/questions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ question, answer })
-      });
-
-      // Formu temizliyoruz
+    // Yeni soruyu belirlenen test ID'sine ekliyoruz
+    await fetch(`${apiUrl}/api/tests/${selectedTestId}/questions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ question, answer })
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert('Soru başarıyla eklendi');
       setQuestion('');
       setAnswer('');
-      alert('Soru başarıyla eklendi');
-    } catch (error) {
+    })
+    .catch(error => {
       console.error('Error adding question:', error);
       alert('Soru eklenirken bir hata oluştu');
-    }
+    });
   };
 
   const handleAddTest = async (e) => {
     e.preventDefault();
-
-    try {
-      // Yeni testi ekliyoruz
-      const response = await fetch(`${apiUrl}/api/tests`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ testName: newTestName })
-      });
-
-      if (response.ok) {
-        setNewTestName('');
-        alert('Test başarıyla oluşturuldu');
-        // Yeni test listesini güncelle
-        const updatedTests = await response.json();
-        setTests([...tests, updatedTests]);
-      } else {
-        alert('Test oluşturulurken bir hata oluştu');
-      }
-    } catch (error) {
+    // Yeni testi ekliyoruz
+    await fetch(`${apiUrl}/api/tests`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ testName: newTestName })
+    })
+    .then(res => res.json())
+    .then(data => {
+      setNewTestName('');
+      alert('Test başarıyla oluşturuldu');
+      setTests([...tests, data]); // Yeni testi listeye ekliyoruz
+      setSelectedTestId(data._id); // Yeni oluşturulan testi seçili yap
+    })
+    .catch(error => {
       console.error('Error adding test:', error);
       alert('Test oluşturulurken bir hata oluştu');
-    }
+    });
   };
 
   return (
@@ -115,12 +98,12 @@ const AddQuestion = () => {
       <h1 className="text-2xl mb-4 mt-10">Soru Ekle</h1>
       <form onSubmit={handleAddQuestion} className="flex flex-col space-y-4">
         <select
-          value={selectedTestName}
-          onChange={(e) => setSelectedTestName(e.target.value)}
+          value={selectedTestId}
+          onChange={(e) => setSelectedTestId(e.target.value)}
           className="p-2 border border-gray-400 rounded"
         >
-          {tests.map((test, index) => (
-            <option key={index} value={test.testName}>
+          {tests.map((test) => (
+            <option key={test._id} value={test._id}>
               {test.testName}
             </option>
           ))}
