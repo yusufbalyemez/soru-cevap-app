@@ -140,22 +140,22 @@ const QuestionCard = () => {
           )}
         </div>
       </div>
-      <div className="flex space-x-2 mt-4">
+      <div className="flex space-x-2 mt-4 w-full justify-center">
         <button
           onClick={handlePreviousQuestion}
-          className="p-3 bg-green-700 text-white rounded-lg mt-1 hover:opacity-90"
+          className="p-3 bg-green-700 text-white rounded-lg mt-1 hover:opacity-90 w-32"
         >
           Önceki
         </button>
         <button
           onClick={() => setShowAnswer(!showAnswer)}
-          className="p-3 bg-yellow-500 w-full md:w-[600px] rounded-3xl mt-1 hover:opacity-90"
+          className="p-3 bg-yellow-500 text-white rounded-3xl mt-1 hover:opacity-90 w-32"
         >
-          {showAnswer ? "Cevabı Gizle" : "Cevabı Göster"}
+          {showAnswer ? "Gizle" : "Göster"}
         </button>
         <button
           onClick={handleNextQuestion}
-          className="p-3 bg-green-700 text-white rounded-lg mt-1 hover:opacity-90"
+          className="p-3 bg-green-700 text-white rounded-lg mt-1 hover:opacity-90 w-32"
         >
           Sonraki
         </button>
