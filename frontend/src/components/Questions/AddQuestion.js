@@ -111,14 +111,14 @@ const AddQuestion = () => {
           type="text"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Question"
+          placeholder="Soru"
           className="p-2 border border-gray-400 rounded"
         />
         <input
           type="text"
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
-          placeholder="Answer"
+          placeholder="Cevap"
           className="p-2 border border-gray-400 rounded"
         />
         <button

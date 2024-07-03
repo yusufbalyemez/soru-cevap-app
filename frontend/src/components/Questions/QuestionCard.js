@@ -47,9 +47,6 @@ const QuestionCard = () => {
     } else {
       if (currentQuestionIndex < tests[currentTestIndex].questions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-      } else if (currentTestIndex < tests.length - 1) {
-        setCurrentTestIndex(currentTestIndex + 1);
-        setCurrentQuestionIndex(0);
       }
     }
   };
@@ -63,11 +60,6 @@ const QuestionCard = () => {
     } else {
       if (currentQuestionIndex > 0) {
         setCurrentQuestionIndex(currentQuestionIndex - 1);
-      } else if (currentTestIndex > 0) {
-        setCurrentTestIndex(currentTestIndex - 1);
-        setCurrentQuestionIndex(
-          tests[currentTestIndex - 1].questions.length - 1
-        );
       }
     }
   };
@@ -88,6 +80,17 @@ const QuestionCard = () => {
     }
   };
 
+  const handleRandomQuestion = () => {
+    setShowAnswer(false);
+    if (selectedTest === "Tümü") {
+      const randomIndex = Math.floor(Math.random() * allQuestions.length);
+      setCurrentQuestionIndex(randomIndex);
+    } else {
+      const randomIndex = Math.floor(Math.random() * tests[currentTestIndex].questions.length);
+      setCurrentQuestionIndex(randomIndex);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center py-2 px-1 mt-16">
       <div className="mb-4">
@@ -105,7 +108,10 @@ const QuestionCard = () => {
         </select>
       </div>
 
-      <div className="flex flex-col justify-around w-full min-h-[450px] md:w-[800px] md:h-[600px] border border-cyan-900 rounded-xl bg-cyan-700 shadow-2xl px-4">
+      <div
+        className="flex flex-col justify-around w-full min-h-[450px] md:w-[800px] md:h-[400px] border border-cyan-900 rounded-xl bg-cyan-700 shadow-2xl px-4 cursor-pointer"
+        onClick={handleRandomQuestion}
+      >
         <div className="flex flex-col items-center justify-center">
           <div className="text-yellow-400 text-3xl">
             {selectedTest === "Tümü"
