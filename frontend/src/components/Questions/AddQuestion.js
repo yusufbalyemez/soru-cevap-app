@@ -77,7 +77,7 @@ const AddQuestion = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-10 px-3">
+    <div className="flex flex-col items-center justify-center py-10 px-3 mt-16">
       <h1 className="text-2xl mb-4">Yeni Test Oluştur</h1>
       <form onSubmit={handleAddTest} className="flex flex-col space-y-4">
         <input

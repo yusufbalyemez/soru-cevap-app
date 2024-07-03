@@ -6,7 +6,7 @@ const QuestionCard = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedTest, setSelectedTest] = useState("Tümü");
-  const apiUrl = process.env.REACT_APP_API_URL; 
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   // Backend'den verileri çekme
   useEffect(() => {
@@ -33,8 +33,6 @@ const QuestionCard = () => {
     []
   );
 
-  const currentTest =
-    selectedTest === "Tümü" ? allQuestions : tests[currentTestIndex].questions;
   const currentQuestion =
     selectedTest === "Tümü"
       ? allQuestions[currentQuestionIndex]
@@ -91,7 +89,7 @@ const QuestionCard = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-2 px-1">
+    <div className="flex flex-col items-center justify-center py-2 px-1 mt-16">
       <div className="mb-4">
         <select
           value={selectedTest}

@@ -34,7 +34,7 @@ const AllTests = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-10 px-3">
+    <div className="flex flex-col items-center justify-center py-10 px-3 mt-16">
       <h1 className="text-2xl mb-4">Tüm Testler</h1>
       <ul className="w-full md:w-1/2">
         {tests.map((test) => (
