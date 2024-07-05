@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const AddQuestion = () => {
   const [tests, setTests] = useState([]);
@@ -7,7 +8,8 @@ const AddQuestion = () => {
   const [answer, setAnswer] = useState("");
   const [newTestName, setNewTestName] = useState("");
   const apiUrl = process.env.REACT_APP_API_URL; // .env dosyasındaki değişkeni burada kullanıyoruz
-
+  const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
     // Test adlarını API'den çek
     const fetchTests = async () => {
@@ -20,11 +22,23 @@ const AddQuestion = () => {
         }
       } catch (error) {
         console.error("Error fetching tests:", error);
+      } finally {
+        setLoading(false); // Yüklenme tamamlandığında loading state'ini false yap
       }
     };
 
     fetchTests();
   }, [apiUrl]);
+
+  // Veriler yüklenmeden önceki durum
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <ClipLoader size={50} color={"#123abc"} loading={loading} />
+        <span className="mt-4">Yükleniyor...</span>
+      </div>
+    );
+  }
 
   const handleAddQuestion = async (e) => {
     e.preventDefault();

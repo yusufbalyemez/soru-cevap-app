@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const AllTests = () => {
   const [tests, setTests] = useState([]);
   const apiUrl = process.env.REACT_APP_API_URL; // .env dosyasındaki değişkeni burada kullanıyoruz
+  const [loading, setLoading] = useState(true);
 
   // API'den test adlarını çekme
   useEffect(() => {
@@ -13,7 +15,9 @@ const AllTests = () => {
         const data = await response.json();
         setTests(data);
       } catch (error) {
-        console.error('Error fetching tests:', error);
+        console.error("Error fetching tests:", error);
+      } finally {
+        setLoading(false); // Yüklenme tamamlandığında loading state'ini false yap
       }
     };
 
@@ -24,22 +28,34 @@ const AllTests = () => {
   const handleDelete = async (testId) => {
     try {
       await fetch(`${apiUrl}/api/tests/${testId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
       // Sadece silinen testi listeden çıkarma
-      setTests(tests.filter(test => test._id !== testId));
+      setTests(tests.filter((test) => test._id !== testId));
     } catch (error) {
-      console.error('Error deleting test:', error);
+      console.error("Error deleting test:", error);
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center py-10 px-3 mt-16">
       <h1 className="text-2xl mb-4">Tüm Testler</h1>
+      {loading ? (
+        <div className="flex justify-center items-center">
+          <ClipLoader size={50} color={"#123abc"} loading={loading} />
+          <span className="ml-4">Yükleniyor...</span>
+        </div>
+      ) : (
       <ul className="w-full md:w-1/2">
         {tests.map((test) => (
-          <li key={test._id} className="flex justify-between items-center border-b py-2">
-            <Link to={`/tests/${test._id}`} className="text-blue-500 hover:underline">
+          <li
+            key={test._id}
+            className="flex justify-between items-center border-b py-2"
+          >
+            <Link
+              to={`/tests/${test._id}`}
+              className="text-blue-500 hover:underline"
+            >
               {test.testName}
             </Link>
             <div>
@@ -59,6 +75,7 @@ const AllTests = () => {
           </li>
         ))}
       </ul>
+           )}
     </div>
   );
 };

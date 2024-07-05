@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const QuestionCard = () => {
   const [tests, setTests] = useState([]);
@@ -7,6 +8,7 @@ const QuestionCard = () => {
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedTest, setSelectedTest] = useState("Tümü");
   const apiUrl = process.env.REACT_APP_API_URL;
+  const [loading, setLoading] = useState(true);
 
   // Backend'den verileri çekme
   useEffect(() => {
@@ -18,10 +20,24 @@ const QuestionCard = () => {
       } catch (error) {
         console.error("Error fetching tests:", error);
       }
+    finally {
+      setLoading(false); // Yüklenme tamamlandığında loading state'ini false yap
+    }
     };
 
     fetchTests();
   }, [apiUrl]);
+
+  // Veriler yüklenmeden önceki durum
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <ClipLoader size={50} color={"#123abc"} loading={loading} />
+        <span className="mt-4">Yükleniyor...</span>
+      </div>
+    );
+  }
+
 
   // Veriler yüklenmeden önceki durum
   if (tests.length === 0) {

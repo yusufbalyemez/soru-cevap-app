@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const TestDetails = () => {
   const { testId } = useParams(); // testIndex yerine testId kullan
   const [test, setTest] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL; // .env dosyasındaki değişkeni burada kullanıyoruz
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTestDetails = async () => {
@@ -14,20 +16,29 @@ const TestDetails = () => {
         setTest(data);
       } catch (error) {
         console.error("Error fetching test details:", error);
+      } finally {
+        setLoading(false); // Yüklenme tamamlandığında loading state'ini false yap
       }
     };
 
     fetchTestDetails();
   }, [testId, apiUrl]);
 
+  // Veriler yüklenmeden önceki durum
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <ClipLoader size={50} color={"#123abc"} loading={loading} />
+        <span className="mt-4">Yükleniyor...</span>
+      </div>
+    );
+  }
+
   const handleDeleteQuestion = async (questionId) => {
     try {
-      await fetch(
-        `${apiUrl}/api/tests/${testId}/questions/${questionId}`,
-        {
-          method: "DELETE",
-        }
-      );
+      await fetch(`${apiUrl}/api/tests/${testId}/questions/${questionId}`, {
+        method: "DELETE",
+      });
       setTest({
         ...test,
         questions: test.questions.filter((q) => q._id !== questionId),
